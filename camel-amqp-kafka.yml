@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camel-amqp-kafka
+  labels:
+    app: iot-demo
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: iot-demo
+  template:
+    metadata:
+      labels:
+        app: iot-demo
+        name: camel-amqp-kafka
+    spec:
+      containers:
+      - name: camel-amqp-kafka
+        image: docker.io/ppatierno/camel-amqp-kafka:latest
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVER
+          value: my-cluster-kafka-bootstrap:9092
+        - name: KAFKA_TOPIC
+          value: iot-temperature
+        - name: AMQP_SERVER
+          value: qdrouterd:5672
+        - name: AMQP_ADDRESS
+          value: iot-temperature
