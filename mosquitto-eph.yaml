@@ -1,0 +1,35 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: mosquitto-ephemeral
+spec:
+  replicas: 1
+    spec:
+      containers:
+          name: mosquitto-ephemeral
+          image: quay.io/kboone/mosquitto-ephemeral:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 1883
+              protocol: TCP
+            - containerPort: 8883
+              protocol: TCP
+          resources:
+            limits:
+              memory: 128Mi
+---
+kind: Service
+metadata:
+  name: mosquitto-ephemeral-tcp
+spec:
+  ports:
+      port: 1883
+      targetPort: 1883
+---
+kind: Service
+metadata:
+  name: mosquitto-tls
+spec:
+  ports:
+      port: 8883
+      targetPort: 8883
