@@ -9,4 +9,4 @@ spec:
   - port: 8883
     targetPort: 8883
   selector:
-    name: mosquitto-tls
+    name: mosquitto-ephemeral
