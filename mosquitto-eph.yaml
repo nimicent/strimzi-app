@@ -4,19 +4,49 @@ metadata:
   name: mosquitto-ephemeral
 spec:
   replicas: 1
+  strategy:
+    type: Rolling
+  selector:
+    name: mosquitto-ephemeral
+  template:
+    metadata:
+      name: mosquitto-ephemeral
+      labels:
+        name: mosquitto-ephemeral
     spec:
       containers:
+        - env: 
+          - name: SOLUNAR_WS_LOG_LEVEL
+            value: "1"
           name: mosquitto-ephemeral
           image: quay.io/kboone/mosquitto-ephemeral:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 1883
+            - containerPort: 1883 
               protocol: TCP
-            - containerPort: 8883
+            - containerPort: 8883 
               protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 1883
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 1883
+            timeoutSeconds: 1
           resources:
             limits:
               memory: 128Mi
+          securityContext:
+            privileged: false
 ---
 kind: Service
 metadata:
